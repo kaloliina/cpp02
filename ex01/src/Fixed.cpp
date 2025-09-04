@@ -17,7 +17,7 @@ Fixed::Fixed(const int ints)
 Fixed::Fixed(const float floats)
 {
 	std::cout << "Float Constructor called" << std::endl;
-	fixed_value = floats * pow(2, 8);
+	fixed_value = roundf(floats * pow(2, 8));
 }
 Fixed::Fixed() : fixed_value(0)
 {
@@ -47,7 +47,7 @@ Fixed::~Fixed()
 
 float Fixed::toFloat( void ) const
 {
-	float f = (float)(fixed_value / pow(2,8));
+	float f = (float)(fixed_value / (pow(2,8)));
 	return f;
 }
 int Fixed::toInt( void ) const 
