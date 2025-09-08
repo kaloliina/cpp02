@@ -1,6 +1,7 @@
 #ifndef FIXED_HPP
 #define FIXED_HPP
 #include <iostream>
+#include <cmath>
 
 class Fixed {
 private:
@@ -17,10 +18,10 @@ public:
 //Comparison
 	bool operator>(const Fixed &other) const;
 	bool operator<(const Fixed &other) const;
-	bool operator>=(const Fixed &other);
-	bool operator<=(const Fixed &other);
-	bool operator==(const Fixed &other);
-	bool operator!=(const Fixed &other);
+	bool operator>=(const Fixed &other) const;
+	bool operator<=(const Fixed &other)const ;
+	bool operator==(const Fixed &other) const;
+	bool operator!=(const Fixed &other) const;
 
 //Arithmetic
 	Fixed operator+(const Fixed &other);
@@ -35,10 +36,10 @@ public:
 	Fixed operator++(int);
 	Fixed operator--(int);
 
-	Fixed& findMin(Fixed &nbr1, Fixed &nbr2);
-	const Fixed& findConstMin(const Fixed &nbr1, const Fixed &nbr2);
-	Fixed& findMax(Fixed &nbr1, Fixed &nbr2);
-	const Fixed& findConstMax(const Fixed &nbr1, const Fixed &nbr2);
+	Fixed& findMin(Fixed &nbr1, Fixed &nbr2) const;
+	const Fixed& findConstMin(const Fixed &nbr1, const Fixed &nbr2) const;
+	Fixed& findMax(Fixed &nbr1, Fixed &nbr2) const;
+	const Fixed& findConstMax(const Fixed &nbr1, const Fixed &nbr2) const;
 
 //increment decrement operations
 	float toFloat( void ) const;

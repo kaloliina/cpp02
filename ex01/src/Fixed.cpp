@@ -1,23 +1,15 @@
 #include "../include/Fixed.hpp"
-#include <cmath>
-/*
-So we have two constructors, if we only get int. We know we can bitshift
-8 bits to the left to the "important" section.
-If we get float, we cant just directly store the result
-because int loses track of the decimals so thats why we multiply it with 
-2 to the power of 8. 
-*/
 
 Fixed::Fixed(const int ints)
 {
 	std::cout << "Int Constructor called" << std::endl;
 	fixed_value = ints << fractional;
 }
-//we cannot use pow function
+
 Fixed::Fixed(const float floats)
 {
 	std::cout << "Float Constructor called" << std::endl;
-	fixed_value = roundf(floats * pow(2, 8));
+	fixed_value = roundf(floats * 256);
 }
 Fixed::Fixed() : fixed_value(0)
 {
@@ -29,7 +21,8 @@ Fixed::Fixed(const Fixed& copy)
 	std::cout << "Copy Constructor called" << std::endl;
 	this->fixed_value = copy.fixed_value;
 }
-//the syntax still feels a tad confusing
+
+/*This syntax still feels a tad confusing*/
 Fixed& Fixed::operator=(const Fixed &src)
 {
 	std::cout << "Copy Assignment called" << std::endl;
@@ -47,9 +40,10 @@ Fixed::~Fixed()
 
 float Fixed::toFloat( void ) const
 {
-	float f = (float)(fixed_value / (pow(2,8)));
+	float f = (float)(fixed_value / 256);
 	return f;
 }
+
 int Fixed::toInt( void ) const 
 {
 	int i = fixed_value >> fractional;
@@ -69,13 +63,15 @@ void Fixed::setRawBits( int const raw )
 }
 
 //Investigate this! I don't understand why this was needed for the printing fix
-std::ostream& operator<<(std::ostream& os, const Fixed& fixed){
-    // Output the internal value or use a member function that returns a printable type
-    os << fixed.toFloat(); // or another method to represent the value
-    return os;
+std::ostream& operator<<(std::ostream& os, const Fixed& fixed)
+{
+	// Output the internal value or use a member function that returns a printable type
+	os << fixed.toFloat(); // or another method to represent the value
+	return os;
 }
 
 //Comparison Operators
+/*Also pretty confused why find findMax refused to build when this was not marked as const*/
 bool Fixed::operator>(const Fixed &other) const
 {
 	return (this->getRawBits() > other.getRawBits());
@@ -84,21 +80,21 @@ bool Fixed::operator<(const Fixed &other) const
 {
 	return (this->getRawBits() < other.getRawBits());
 }
-bool Fixed::operator>=(const Fixed &other)
+bool Fixed::operator>=(const Fixed &other) const
 {
 	return (this->getRawBits() >= other.getRawBits());
 }
-bool Fixed::operator<=(const Fixed &other)
+bool Fixed::operator<=(const Fixed &other) const
 {
 	return (this->getRawBits() <= other.getRawBits());
 }
-bool Fixed::operator==(const Fixed &other)
+bool Fixed::operator==(const Fixed &other) const
 {
-	return (this->getRawBits() <= other.getRawBits());
+	return (this->getRawBits() == other.getRawBits());
 }
-bool Fixed::operator!=(const Fixed &other)
+bool Fixed::operator!=(const Fixed &other) const
 {
-	return (this->getRawBits() <= other.getRawBits());
+	return (this->getRawBits() != other.getRawBits());
 }
 
 //Arithmetic Operators
@@ -112,9 +108,10 @@ Fixed Fixed::operator-(const Fixed &other)
 	this->fixed_value = this->fixed_value - other.fixed_value;
 	return (*this);
 }
+
 /*Create examples for these because it was easier for me to visualise them that way!*/
-//also wonder if I should adjust the value with setter function because
-//basically i could do it directly
+/*Also wondering if I should adjust the value witth setter function or like this because
+basically i can do it directly.*/
 Fixed Fixed::operator*(const Fixed &other)
 {
 	long long new_fixed;
@@ -137,29 +134,38 @@ Fixed Fixed::operator++()
 	this->fixed_value = this->fixed_value + 1;
 	return (*this);
 }
-
 Fixed Fixed::operator--() 
 {
 	this->fixed_value = this->fixed_value - 1;
 	return (*this);
 }
-//these ones still to be done but its a little unclear how to do these
-// Fixed Fixed::operator++(int) 
-// {
+//I still don't fully grasp how does this work exactly, we return temp with the old value
+//but then we change the actual objects value.
+Fixed Fixed::operator++(int) 
+{
+	Fixed *temp;
 
-// }
-// Fixed Fixed::operator--(int) 
-// {
-// }
+	temp = this;
+	this->fixed_value = this->fixed_value + 1;
+	return (*temp);
+}
+Fixed Fixed::operator--(int)
+{
+	Fixed *temp;
 
-Fixed& Fixed::findMin(Fixed &nbr1, Fixed &nbr2)
+	temp = this;
+	this->fixed_value = this->fixed_value - 1;
+	return (*temp);	
+}
+/*Do we really need two separate functions for these, maybe at least I could call to the other function*/
+Fixed& Fixed::findMin(Fixed &nbr1, Fixed &nbr2) const
 {
 	if (nbr1 < nbr2)
 		return (nbr1);
 	else
 		return (nbr2);
 }
-const Fixed& Fixed::findConstMin(const Fixed &nbr1, const Fixed &nbr2)
+const Fixed& Fixed::findConstMin(const Fixed &nbr1, const Fixed &nbr2) const
 {
 	if (nbr1 < nbr2)
 		return (nbr1);
@@ -167,14 +173,14 @@ const Fixed& Fixed::findConstMin(const Fixed &nbr1, const Fixed &nbr2)
 		return (nbr2);
 }
 
-Fixed& Fixed::findMax(Fixed &nbr1, Fixed &nbr2)
+Fixed& Fixed::findMax(Fixed &nbr1, Fixed &nbr2) const
 {
 	if (nbr1 > nbr2)
 		return (nbr1);
 	else
 		return (nbr2);
 }
-const Fixed& Fixed::findConstMax(const Fixed &nbr1, const Fixed &nbr2)
+const Fixed& Fixed::findConstMax(const Fixed &nbr1, const Fixed &nbr2) const
 {
 	if (nbr1 > nbr2)
 		return (nbr1);

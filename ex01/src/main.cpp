@@ -23,7 +23,12 @@ else
 std::cout << a << std::endl;
 a = a + b;
 std::cout << a << std::endl;
+int e = 0;
+std::cout << ++e << std::endl;
+std::cout << e++ << std::endl;
+std::cout << e << std::endl;
 return 0;
+
 }
 
 
